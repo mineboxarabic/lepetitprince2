@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>LogIn</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+
+  <ion-content [fullscreen]="true">
+    <ion-list>
+      <ion-item>
+        <ion-label>Email input</ion-label>
+        <ion-input type="email" placeholder="email@domain.com" [(ngModel)] = "email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>Password input</ion-label>
+        <ion-input type="password" value="" [(ngModel)] = "password"></ion-input>
+      </ion-item>
+    </ion-list>
+    <ion-button expand="block" (click)="logIn()">Log in</ion-button>
+    <ion-item>
+      <ion-checkbox slot="start" [(ngModel)]="rememberMe"></ion-checkbox>
+      <ion-label>Remember Me</ion-label>
+    </ion-item>
+
+  </ion-content>
+</ion-content>

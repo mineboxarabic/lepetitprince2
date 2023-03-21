@@ -1,17 +1,42 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      Search 
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  
+    <ion-list-header>
+      <ion-title class="mainHeader">Recherche de Articles</ion-title>
+    </ion-list-header>
+  
+    <ion-input type="text" placeholder="Recherche" [(ngModel)] = "searchText" (input)="searchFor()"></ion-input>
+    <ion-button expand="block" (click)="searchFor()">Rechercher</ion-button>
+    <ion-list *ngIf="searchedArticles">
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+      <ion-card *ngFor="let article of searchedArticles">
+
+        
+        <div class="imagesContainer" *ngIf="article.photos && article.photos.length > 0 ">
+          <img class="imageThumnails" alt="Silhouette of mountains" *ngFor=" let photo of article.photos" src="http://www.sebastien-thon.fr/prince/images/{{photo.image}}" />
+        </div>
+  
+        <ion-card-header>
+          <ion-card-title>{{article.titre}}</ion-card-title>
+          <ion-card-subtitle>{{article.categorie}}</ion-card-subtitle>
+        </ion-card-header>
+  
+        <ion-card-subtitle class="discriptionText">{{article.texte}}</ion-card-subtitle>
+        <ion-button fill="clear" (click)="showDetails(article.id)">voir les détails</ion-button>
+        <ion-item *ngIf="article.favori != undefined"> 
+          <ion-checkbox slot="start" value="true" [checked]="article.favori" name="isCheck" (ionChange)="addToFavori(article.id,$event)"></ion-checkbox>
+          <ion-label>Favori</ion-label>
+        </ion-item>
+
+      </ion-card>
+
+    </ion-list>
+
 </ion-content>

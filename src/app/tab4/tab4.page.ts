@@ -1,50 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NavController } from '@ionic/angular';
 import { Preferences } from '@capacitor/preferences';
+
 @Component({
-  selector: 'app-tab2',
-  templateUrl: 'tab2.page.html',
-  styleUrls: ['tab2.page.scss']
+  selector: 'app-tab4',
+  templateUrl: './tab4.page.html',
+  styleUrls: ['./tab4.page.scss'],
 })
-export class Tab2Page {
-  public searchText: string;
-  
+export class Tab4Page implements OnInit {
+
+
+  ngOnInit() {
+  }
   public articles: any;
   public className: any;
   public favori: Array<any> = [];
-  public searchedArticles: Array<any> = [];
   constructor( private http: HttpClient , private navCtrl: NavController) {
     this.className = 'les petites';
     this.getData();
-    
-    this.searchText = '';
-
-
-  }
-  searchFor(){
-    this.searchedArticles = [];
-    for(let i = 0 ; i < this.articles.articles.length ; i++){
-      if(this.articles.articles[i].titre.toLowerCase().includes(this.searchText.toLowerCase())){
-        this.searchedArticles.push(this.articles.articles[i]);
-      }
-      else if (this.articles.articles[i].texte.toLowerCase().includes(this.searchText.toLowerCase())){
-        this.searchedArticles.push(this.articles.articles[i]);
-      }
-    }
-    if(this.searchText.length === 1)
-      this.searchedArticles = this.articles.articles;
-    console.log(this.searchText.length);
 
   }
   async getData(){
     let email = await Preferences.get({key: 'ConnectedEmail'});
     let password = await Preferences.get({key: 'ConnectedPassword'});
     let Favori = await Preferences.get({key: 'favori'});
-
-    if(Favori.value != null)
-      this.favori = JSON.parse(Favori.value);
-
     switch(email.value){
       case 'classe1':
         this.className = 'petites';
@@ -59,17 +39,21 @@ export class Tab2Page {
     }
     this.http.get(`http://www.sebastien-thon.fr/prince/index.php?login=${email.value}&mdp=${password.value}`).subscribe((data) => {
       this.articles = data;
-      for(let i = 0; i < this.articles.articles.length; i++){
-        if(this.favori.indexOf(this.articles.articles[i].id) != -1){
-          this.articles.articles[i].favori = true;
-        }else{
-          this.articles.articles[i].favori = false;
-        }
-      }
+      let temp = Array<any>();
       console.log(this.articles.articles);
-      this.searchFor();
+      if(Favori.value != null)
+        this.favori = JSON.parse(Favori.value);
+      console.log(this.favori);
+      this.favori.map((item) => {
+        this.articles.articles.map((article:any) => {
+          if(article.id === item)
+            temp.push(article);
+        });
+
+      }
+      );
+      this.articles.articles = temp;
     });
-    
   }
 
   showDetails(id: any){
@@ -91,4 +75,14 @@ export class Tab2Page {
     await Preferences.set({key: 'favori', value: JSON.stringify(this.favori)});      
   }
 
+  handleRefresh(event:any) {
+    this.getData();
+    setTimeout(() => {
+      event.target.complete();
+    }, 1000);
+  }
+
+
 }
+
+
